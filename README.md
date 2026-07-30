@@ -49,7 +49,7 @@
 
 ---
 
-## 🚀 Quick Start & Installation
+## 🚀 Local Quick Start
 
 ### 1. Clone & Install Dependencies
 ```bash
@@ -82,40 +82,57 @@ python run.py --mode streamlit
 
 ---
 
-## 🏗️ System Architecture
+## 🌐 Detailed Deployment Guide
 
-```
-                       +-------------------------------+
-                       |   Candidate Resume (PDF/TXT)  |
-                       +---------------+---------------+
-                                       |
-                                       v
-                       +---------------+---------------+
-                       |   FastAPI REST API / Web UI   |
-                       +---------------+---------------+
-                                       |
-                +----------------------+----------------------+
-                |                                             |
-                v                                             v
-  +-------------+-------------+                 +-------------+-------------+
-  |  NER & Taxonomy Extractor |                 | Sentence-Transformers Engine|
-  | (spaCy + EntityRuler)     |                 | (all-MiniLM-L6-v2)          |
-  +-------------+-------------+                 +-------------+-------------+
-                |                                             |
-                +----------------------+----------------------+
-                                       |
-                                       v
-                       +---------------+---------------+
-                       | TF-IDF Corpus Skill Gap       |
-                       | & ATS Readability Analyzer    |
-                       +---------------+---------------+
-                                       |
-                                       v
-                       +---------------+---------------+
-                       | Match Score %, Ranked Gaps,   |
-                       | ATS Tips, & Recommendations   |
-                       +-------------------------------+
-```
+### Option 1: Deploy on Render.com (Recommended for FastAPI + Web Dashboard)
+
+1. Sign up / Log in to [Render.com](https://render.com/).
+2. Click **New +** and select **Web Service**.
+3. Connect your GitHub account and select repository: **`Mittal12-Mansi/Resume_matcher`**.
+4. Configure the Web Service settings:
+   - **Name**: `resume-matcher`
+   - **Region**: Select nearest region (e.g., Singapore or Oregon)
+   - **Branch**: `main`
+   - **Runtime**: `Python 3`
+   - **Build Command**:
+     ```bash
+     pip install -r requirements.txt && python run.py --mode generate
+     ```
+   - **Start Command**:
+     ```bash
+     uvicorn api_app:app --host 0.0.0.0 --port $PORT
+     ```
+   - **Instance Type**: Free or Starter
+5. Click **Create Web Service**. Render will build and deploy your app. Your public URL will be live at `https://resume-matcher.onrender.com`!
+
+---
+
+### Option 2: Deploy on Railway.app
+
+1. Log in to [Railway.app](https://railway.app/).
+2. Click **New Project** $\rightarrow$ **Deploy from GitHub repo**.
+3. Select `Mittal12-Mansi/Resume_matcher`.
+4. Railway will automatically detect the `Procfile`:
+   ```bash
+   web: uvicorn api_app:app --host 0.0.0.0 --port $PORT
+   ```
+5. Add Build Command in **Settings** $\rightarrow$ **Build Command**:
+   ```bash
+   pip install -r requirements.txt && python run.py --mode generate
+   ```
+6. Click **Generate Domain** under Networking to get your public live URL.
+
+---
+
+### Option 3: Deploy Streamlit App on Streamlit Community Cloud (Free 1-Click)
+
+1. Go to [share.streamlit.io](https://share.streamlit.io/).
+2. Sign in with GitHub.
+3. Click **New app** and configure:
+   - **Repository**: `Mittal12-Mansi/Resume_matcher`
+   - **Branch**: `main`
+   - **Main file path**: `app.py`
+4. Click **Deploy!**
 
 ---
 
@@ -133,15 +150,6 @@ The model is evaluated against 50 manually annotated Resume-Job Description pair
 
 ---
 
-## 🚢 Deployment (Render / Railway)
-
-### Render Deployment
-1. Connect your repository to Render as a **Web Service**.
-2. Set Environment Build Command: `pip install -r requirements.txt && python run.py --mode generate`
-3. Set Start Command: `uvicorn api_app:app --host 0.0.0.0 --port $PORT`
-
----
-
 ## 📂 Project Structure
 
 ```
@@ -156,6 +164,7 @@ Resume_matcher/
 ├── ner_extractor.py         # Named Entity Recognition skill extractor
 ├── similarity_engine.py     # Sentence-Transformers semantic embedding similarity
 ├── run.py                   # CLI wrapper runner
+├── Procfile                 # Cloud deployment process file (Render, Railway)
 ├── requirements.txt         # Project Python dependencies
 ├── static/
 │   ├── index.html           # Ultra-modern web dashboard HTML
