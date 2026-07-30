@@ -2,10 +2,12 @@
 
 > Production-grade AI Resume Shortlisting & Skill Gap Analyzer powered by **NER Skill Extraction**, **Sentence Transformers (all-MiniLM-L6-v2)** semantic embeddings, **Corpus TF-IDF Skill Gap Ranking**, **ATS Readiness Analyzer**, and a **50-Pair Labeled Evaluation Benchmark**.
 
+[![Live Demo](https://img.shields.io/badge/Live_Demo-onrender.com-success?style=for-the-badge&logo=render)](https://resume-matcher-o9sq.onrender.com)
 [![GitHub Repository](https://img.shields.io/badge/GitHub-Mittal12--Mansi%2FResume__matcher-181717?style=for-the-badge&logo=github)](https://github.com/Mittal12-Mansi/Resume_matcher)
 ![FastAPI Backend](https://img.shields.io/badge/FastAPI-v2.0-indigo?style=for-the-badge&logo=fastapi)
-![ML Architecture](https://img.shields.io/badge/Model-SentenceTransformers-purple?style=for-the-badge&logo=huggingface)
 ![Evaluation Benchmark](https://img.shields.io/badge/Precision-100%25-brightgreen?style=for-the-badge)
+
+🌐 **Live Web Application Demo**: [https://resume-matcher-o9sq.onrender.com](https://resume-matcher-o9sq.onrender.com)
 
 ---
 
@@ -82,57 +84,10 @@ python run.py --mode streamlit
 
 ---
 
-## 🌐 Detailed Deployment Guide
+## 🌐 Live Cloud Deployments
 
-### Option 1: Deploy on Render.com (Recommended for FastAPI + Web Dashboard)
-
-1. Sign up / Log in to [Render.com](https://render.com/).
-2. Click **New +** and select **Web Service**.
-3. Connect your GitHub account and select repository: **`Mittal12-Mansi/Resume_matcher`**.
-4. Configure the Web Service settings:
-   - **Name**: `resume-matcher`
-   - **Region**: Select nearest region (e.g., Singapore or Oregon)
-   - **Branch**: `main`
-   - **Runtime**: `Python 3`
-   - **Build Command**:
-     ```bash
-     pip install -r requirements.txt && python run.py --mode generate
-     ```
-   - **Start Command**:
-     ```bash
-     uvicorn api_app:app --host 0.0.0.0 --port $PORT
-     ```
-   - **Instance Type**: Free or Starter
-5. Click **Create Web Service**. Render will build and deploy your app. Your public URL will be live at `https://resume-matcher.onrender.com`!
-
----
-
-### Option 2: Deploy on Railway.app
-
-1. Log in to [Railway.app](https://railway.app/).
-2. Click **New Project** $\rightarrow$ **Deploy from GitHub repo**.
-3. Select `Mittal12-Mansi/Resume_matcher`.
-4. Railway will automatically detect the `Procfile`:
-   ```bash
-   web: uvicorn api_app:app --host 0.0.0.0 --port $PORT
-   ```
-5. Add Build Command in **Settings** $\rightarrow$ **Build Command**:
-   ```bash
-   pip install -r requirements.txt && python run.py --mode generate
-   ```
-6. Click **Generate Domain** under Networking to get your public live URL.
-
----
-
-### Option 3: Deploy Streamlit App on Streamlit Community Cloud (Free 1-Click)
-
-1. Go to [share.streamlit.io](https://share.streamlit.io/).
-2. Sign in with GitHub.
-3. Click **New app** and configure:
-   - **Repository**: `Mittal12-Mansi/Resume_matcher`
-   - **Branch**: `main`
-   - **Main file path**: `app.py`
-4. Click **Deploy!**
+- ⚡ **Primary Application (FastAPI + Glassmorphic UI)**: [https://resume-matcher-o9sq.onrender.com](https://resume-matcher-o9sq.onrender.com)
+- 🎈 **Alternative Streamlit Interface**: [https://resumematcher-jmbunwuludkd6dgadcipkm.streamlit.app](https://resumematcher-jmbunwuludkd6dgadcipkm.streamlit.app)
 
 ---
 
