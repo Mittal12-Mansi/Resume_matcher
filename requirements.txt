@@ -1,9 +1,6 @@
 fastapi
 uvicorn
-streamlit
 scikit-learn
-spacy
-sentence-transformers
 pandas
 PyPDF2
 python-multipart
