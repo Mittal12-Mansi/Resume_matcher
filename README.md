@@ -2,9 +2,23 @@
 
 > Production-grade AI Resume Shortlisting & Skill Gap Analyzer powered by **NER Skill Extraction**, **Sentence Transformers (all-MiniLM-L6-v2)** semantic embeddings, **Corpus TF-IDF Skill Gap Ranking**, **ATS Readiness Analyzer**, and a **50-Pair Labeled Evaluation Benchmark**.
 
-![UI Dashboard Banner](https://img.shields.io/badge/FastAPI-v2.0-indigo?style=for-the-badge&logo=fastapi)
+[![GitHub Repository](https://img.shields.io/badge/GitHub-Mittal12--Mansi%2FResume__matcher-181717?style=for-the-badge&logo=github)](https://github.com/Mittal12-Mansi/Resume_matcher)
+![FastAPI Backend](https://img.shields.io/badge/FastAPI-v2.0-indigo?style=for-the-badge&logo=fastapi)
 ![ML Architecture](https://img.shields.io/badge/Model-SentenceTransformers-purple?style=for-the-badge&logo=huggingface)
-![Evaluation Benchmark](https://img.shields.io/badge/Precision_F1-High-green?style=for-the-badge)
+![Evaluation Benchmark](https://img.shields.io/badge/Precision-100%25-brightgreen?style=for-the-badge)
+
+---
+
+## 🖥️ Application Screenshots
+
+### 1. Dashboard & Resume Input Interface
+![Input Interface](assets/ui.png)
+
+### 2. Match Score & TF-IDF Ranked Skill Gap Analysis
+![Results Breakdown & Skill Gap](assets/results.png)
+
+### 3. Model Precision & Recall Evaluation Benchmark (50 Test Pairs)
+![Model Evaluation Benchmark](assets/ats.png)
 
 ---
 
@@ -20,7 +34,7 @@
 
 3. **TF-IDF Ranked Skill Gap Analysis**:
    - Identifies skills requested in Job Description but missing from candidate's Resume.
-   - Ranks missing skills by **Corpus TF-IDF Importance Weight** trained across 500+ job postings so critical gaps (e.g., *Docker*, *System Design*, *Kubernetes*) rank above generic terms.
+   - Ranks missing skills by **Corpus TF-IDF Importance Weight** trained across 500+ job postings so critical gaps (e.g., *C++*, *Agile*, *Docker*, *System Design*) rank above generic terms.
    - Categorizes gaps into **Critical**, **High**, and **Medium** priority with actionable recommendations.
 
 4. **ATS Readability & Structural Analyzer**:
@@ -31,7 +45,7 @@
 
 6. **Empirical Evaluation Benchmark Suite (`eval_engine.py`)**:
    - Includes 50 manually labeled ground-truth Resume-JD evaluation test pairs.
-   - Computes **Precision**, **Recall**, **F1 Score**, **Accuracy**, and **Mean Absolute Error (MAE)**.
+   - Computes **Precision (100%)**, **Recall (69.7%)**, **F1 Score (82.14%)**, **Accuracy (80%)**, and **Mean Absolute Error (13.43 points)**.
 
 ---
 
@@ -39,8 +53,8 @@
 
 ### 1. Clone & Install Dependencies
 ```bash
-git clone https://github.com/your-username/Resume-Matcher.git
-cd Resume-Matcher
+git clone https://github.com/Mittal12-Mansi/Resume_matcher.git
+cd Resume_matcher
 
 pip install -r requirements.txt
 ```
@@ -61,7 +75,7 @@ Open your browser and navigate to **`http://localhost:8000`**.
 python run.py --mode eval
 ```
 
-### 5. Launch Streamlit Application (Alternative)
+### 5. Launch Streamlit Application (Alternative UI)
 ```bash
 python run.py --mode streamlit
 ```
@@ -109,13 +123,13 @@ python run.py --mode streamlit
 
 The model is evaluated against 50 manually annotated Resume-Job Description pairs:
 
-| Metric | Benchmark Score |
-| :--- | :--- |
-| **Precision** | **94.2%** |
-| **Recall** | **91.5%** |
-| **F1 Score** | **92.8%** |
-| **Accuracy** | **92.0%** |
-| **Mean Absolute Error (MAE)** | **4.8 points** |
+| Metric | Benchmark Score | Description |
+| :--- | :--- | :--- |
+| **Precision** | **100.0%** | True Positive Match Accuracy (0 False Positives) |
+| **Recall** | **69.7%** | Relevant Fit Coverage |
+| **F1 Score** | **82.14%** | Harmonic Mean of Precision & Recall |
+| **Accuracy** | **80.0%** | Overall Classification Accuracy |
+| **Mean Absolute Error (MAE)** | **13.43 pts** | Average difference from target score |
 
 ---
 
@@ -131,7 +145,7 @@ The model is evaluated against 50 manually annotated Resume-Job Description pair
 ## 📂 Project Structure
 
 ```
-Resume-Matcher/
+Resume_matcher/
 ├── api_app.py               # FastAPI backend REST API server & static router
 ├── app.py                   # Streamlit app interface (alternative frontend)
 ├── ats_analyzer.py          # ATS structure, action verbs, & keyword evaluator
@@ -141,13 +155,13 @@ Resume-Matcher/
 ├── matcher.py               # Top-level matcher interface
 ├── ner_extractor.py         # Named Entity Recognition skill extractor
 ├── similarity_engine.py     # Sentence-Transformers semantic embedding similarity
-├── skills_taxonomy.py       # Taxonomy & alias manager
 ├── run.py                   # CLI wrapper runner
 ├── requirements.txt         # Project Python dependencies
 ├── static/
 │   ├── index.html           # Ultra-modern web dashboard HTML
 │   ├── styles.css           # Glassmorphism dark mode CSS
 │   └── app.js               # Frontend interactive JavaScript
+├── assets/                  # App interface screenshots & visual diagrams
 └── data/
     ├── job_postings.json    # Corpus of 500 job postings for TF-IDF training
     ├── skills_taxonomy.json # 500+ skills taxonomy with alias mappings
