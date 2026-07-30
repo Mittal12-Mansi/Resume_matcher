@@ -1,8 +1,13 @@
 import json
 import os
 import re
-import spacy
-from spacy.pipeline import EntityRuler
+
+try:
+    import spacy
+    from spacy.pipeline import EntityRuler
+    SPACY_AVAILABLE = True
+except ImportError:
+    SPACY_AVAILABLE = False
 
 # Path to skills database
 TAXONOMY_PATH = os.path.join(os.path.dirname(__file__), "data", "skills_taxonomy.json")
@@ -14,14 +19,13 @@ class SkillNERExtractor:
         self.all_skills = set()
         self.load_taxonomy(taxonomy_file)
         
-        # Load spacy model
-        try:
-            self.nlp = spacy.load("en_core_web_sm")
-        except Exception:
-            # Fallback if spacy model not downloaded
-            self.nlp = spacy.blank("en")
-
-        self.setup_spacy_ruler()
+        self.nlp = None
+        if SPACY_AVAILABLE:
+            try:
+                self.nlp = spacy.load("en_core_web_sm")
+            except Exception:
+                self.nlp = spacy.blank("en")
+            self.setup_spacy_ruler()
 
     def load_taxonomy(self, filepath):
         if os.path.exists(filepath):
@@ -38,6 +42,8 @@ class SkillNERExtractor:
             self.all_skills.add(alias.lower())
 
     def setup_spacy_ruler(self):
+        if not self.nlp:
+            return
         if "entity_ruler" in self.nlp.pipe_names:
             ruler = self.nlp.get_pipe("entity_ruler")
         else:
@@ -45,7 +51,6 @@ class SkillNERExtractor:
         
         patterns = []
         for skill in self.all_skills:
-            # Create tokenized patterns
             tokens = skill.split()
             pattern = [{"LOWER": t} for t in tokens]
             patterns.append({"label": "SKILL", "pattern": pattern})
@@ -65,16 +70,19 @@ class SkillNERExtractor:
         extracted = set()
         text_lower = text.lower()
         
-        # 1. spaCy Entity Extractor
-        doc = self.nlp(text)
-        for ent in doc.ents:
-            if ent.label_ == "SKILL":
-                norm = self.normalize_skill(ent.text)
-                extracted.add(norm)
+        # 1. spaCy Entity Extractor (if available)
+        if self.nlp:
+            try:
+                doc = self.nlp(text)
+                for ent in doc.ents:
+                    if ent.label_ == "SKILL":
+                        norm = self.normalize_skill(ent.text)
+                        extracted.add(norm)
+            except Exception:
+                pass
 
-        # 2. Regex / String Boundary Matcher for multi-word and boundary exact matches
+        # 2. Regex / String Phrase Boundary Matcher
         for skill in self.all_skills:
-            # Use word boundary for single token, or phrase match
             pattern = r'\b' + re.escape(skill) + r'\b'
             if re.search(pattern, text_lower):
                 norm = self.normalize_skill(skill)
@@ -89,7 +97,6 @@ class SkillNERExtractor:
             if cat_matched:
                 by_category[category] = cat_matched
         
-        # Uncategorized check
         categorized_set = set(s for cat_list in by_category.values() for s in cat_list)
         uncategorized = [s for s in skills_list if s not in categorized_set]
         if uncategorized:
@@ -113,9 +120,3 @@ def get_skill_extractor():
 def extract_skills_from_text(text):
     extractor = get_skill_extractor()
     return extractor.extract_skills(text)
-
-if __name__ == "__main__":
-    sample_text = "Looking for a Senior Full Stack Dev with Python, Docker, ReactJS, K8s, AWS, and System Design experience."
-    res = extract_skills_from_text(sample_text)
-    print("Extracted Skills:", res["skills"])
-    print("By Category:", json.dumps(res["by_category"], indent=2))
