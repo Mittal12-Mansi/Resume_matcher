@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Resume ↔ Job Matcher & Skill Gap Analyzer</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/styles.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Header -->
+        <header class="navbar">
+            <div class="logo-area">
+                <span class="logo-icon">⚡</span>
+                <div>
+                    <h1>AI Resume Matcher</h1>
+                    <p class="tagline">NER Skill Extraction • Sentence Semantic Matching • Skill-Gap Analysis</p>
+                </div>
+            </div>
+            <nav class="nav-tabs">
+                <button class="tab-btn active" data-tab="matcher-tab">🔍 Matcher & Gap Analysis</button>
+                <button class="tab-btn" data-tab="eval-tab">📊 Benchmark & Eval Report</button>
+            </nav>
+        </header>
+
+        <!-- Main Content Area -->
+        <main class="main-content">
+            
+            <!-- TAB 1: MATCHER & GAP ANALYSIS -->
+            <section id="matcher-tab" class="tab-content active">
+                <div class="input-grid">
+
+                    <!-- Resume Upload Box -->
+                    <div class="card input-card">
+                        <div class="card-header">
+                            <h2>📄 Candidate Resume</h2>
+                            <span class="badge">PDF / TXT</span>
+                        </div>
+                        <div class="file-drop-zone" id="drop-zone">
+                            <input type="file" id="resume-file" accept=".pdf,.txt" hidden>
+                            <div class="drop-icon">📤</div>
+                            <p class="drop-title">Drag & drop resume PDF or click to browse</p>
+                            <p class="file-name" id="selected-file-name">No file selected</p>
+                        </div>
+                        <div class="divider"><span>OR PASTE TEXT</span></div>
+                        <textarea id="resume-text-input" placeholder="Paste resume text directly here..." rows="8"></textarea>
+                    </div>
+
+                    <!-- Job Description Box -->
+                    <div class="card input-card">
+                        <div class="card-header">
+                            <h2>💼 Job Description</h2>
+                            <span class="badge badge-accent">Required</span>
+                        </div>
+                        <textarea id="jd-text-input" placeholder="Paste the complete job description (requirements, skills, responsibilities)..." rows="14"></textarea>
+                    </div>
+                </div>
+
+                <!-- Submit Action Button -->
+                <div class="action-bar">
+                    <button id="analyze-btn" class="btn-primary">
+                        <span class="btn-icon">⚡</span> Analyze Match & Extract Skill Gap
+                    </button>
+                </div>
+
+                <!-- RESULTS SECTION -->
+                <div id="results-container" class="results-section hidden">
+                    
+                    <!-- Metrics Summary Banner -->
+                    <div class="metrics-banner">
+                        <!-- Score Radial -->
+                        <div class="metric-card score-card">
+                            <div class="radial-progress-wrapper">
+                                <svg class="radial-progress" viewBox="0 0 100 100">
+                                    <circle class="bg" cx="50" cy="50" r="42"></circle>
+                                    <circle class="meter" id="score-meter" cx="50" cy="50" r="42" stroke-dasharray="264" stroke-dashoffset="264"></circle>
+                                </svg>
+                                <div class="radial-text">
+                                    <span class="score-val" id="match-score-value">0%</span>
+                                    <span class="score-lbl">Match Fit</span>
+                                </div>
+                            </div>
+                            <div class="fit-status-badge" id="fit-status-badge">Calculating...</div>
+                        </div>
+
+                        <!-- ATS & Component Breakdown -->
+                        <div class="metric-card breakdown-card">
+                            <h3>📊 Match Breakdown</h3>
+                            <div class="bar-group">
+                                <div class="bar-label">
+                                    <span>Semantic Similarity (Sentence-Transformers)</span>
+                                    <strong id="embedding-sim-val">0%</strong>
+                                </div>
+                                <div class="progress-bar"><div class="fill" id="embedding-sim-bar" style="width: 0%"></div></div>
+                            </div>
+                            <div class="bar-group">
+                                <div class="bar-label">
+                                    <span>Skill Coverage Ratio</span>
+                                    <strong id="skill-cov-val">0%</strong>
+                                </div>
+                                <div class="progress-bar"><div class="fill" id="skill-cov-bar" style="width: 0%"></div></div>
+                            </div>
+                            <div class="bar-group">
+                                <div class="bar-label">
+                                    <span>Lexical Density (TF-IDF)</span>
+                                    <strong id="lexical-sim-val">0%</strong>
+                                </div>
+                                <div class="progress-bar"><div class="fill" id="lexical-sim-bar" style="width: 0%"></div></div>
+                            </div>
+                        </div>
+
+                        <!-- ATS Score -->
+                        <div class="metric-card ats-card">
+                            <h3>📑 ATS Compatibility</h3>
+                            <div class="ats-big-score" id="ats-score-value">0%</div>
+                            <p class="ats-sub" id="ats-word-count">0 words parsed</p>
+                        </div>
+                    </div>
+
+                    <!-- Skills & Gap Output Section -->
+                    <div class="skills-grid">
+                        
+                        <!-- Missing Skills Ranked by Importance -->
+                        <div class="card gap-card">
+                            <div class="card-header">
+                                <h2>❌ Skill Gap (Missing in Resume)</h2>
+                                <span class="badge badge-warning">Ranked by TF-IDF Importance</span>
+                            </div>
+                            <p class="section-desc">Skills requested in the Job Description but not detected in candidate's resume, ordered by corpus-wide importance weight.</p>
+                            <div class="gap-list" id="missing-skills-list">
+                                <!-- Dynamic List -->
+                            </div>
+                        </div>
+
+                        <!-- Matched Skills -->
+                        <div class="card match-card">
+                            <div class="card-header">
+                                <h2>✅ Matched Skills</h2>
+                                <span class="badge badge-success" id="matched-count-badge">0 Found</span>
+                            </div>
+                            <p class="section-desc">Technical skills successfully identified in both Resume and Job Description.</p>
+                            <div class="skills-tags-wrapper" id="matched-skills-tags">
+                                <!-- Dynamic Tags -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Recommendations & ATS Feedback -->
+                    <div class="card recommendations-card">
+                        <div class="card-header">
+                            <h2>💡 Actionable Recommendations</h2>
+                        </div>
+                        <ul class="recommendation-list" id="recommendations-list">
+                            <!-- Dynamic Bullets -->
+                        </ul>
+                    </div>
+
+                </div>
+            </section>
+
+            <!-- TAB 2: MODEL EVALUATION BENCHMARK -->
+            <section id="eval-tab" class="tab-content">
+                <div class="card eval-header-card">
+                    <h2>📊 Model Precision & Recall Evaluation Benchmark</h2>
+                    <p>Evaluates the NER skill extractor, sentence-transformers semantic engine, and hybrid matcher against a benchmark dataset of 50 manually labeled Resume-JD pairs.</p>
+                    <button id="run-eval-btn" class="btn-secondary">▶ Run Evaluation Suite</button>
+                </div>
+
+                <div id="eval-results-container" class="eval-results hidden">
+                    <div class="metrics-grid">
+                        <div class="eval-metric-box">
+                            <div class="label">Precision</div>
+                            <div class="value" id="eval-precision">0%</div>
+                            <div class="desc">True Match Accuracy</div>
+                        </div>
+                        <div class="eval-metric-box">
+                            <div class="label">Recall</div>
+                            <div class="value" id="eval-recall">0%</div>
+                            <div class="desc">Relevant Fit Coverage</div>
+                        </div>
+                        <div class="eval-metric-box">
+                            <div class="label">F1-Score</div>
+                            <div class="value" id="eval-f1">0%</div>
+                            <div class="desc">Harmonic Mean</div>
+                        </div>
+                        <div class="eval-metric-box">
+                            <div class="label">Accuracy</div>
+                            <div class="value" id="eval-accuracy">0%</div>
+                            <div class="desc">Overall Classification</div>
+                        </div>
+                        <div class="eval-metric-box">
+                            <div class="label">MAE Error</div>
+                            <div class="value" id="eval-mae">0.0</div>
+                            <div class="desc">Mean Absolute Score Error</div>
+                        </div>
+                    </div>
+
+                    <!-- Confusion Matrix & Sample Table -->
+                    <div class="eval-detail-grid">
+                        <div class="card cm-card">
+                            <h3>Confusion Matrix (50 Samples)</h3>
+                            <div class="cm-table">
+                                <div class="cm-cell tp"><span class="cm-val" id="cm-tp">0</span><span class="cm-lbl">True Positive</span></div>
+                                <div class="cm-cell fp"><span class="cm-val" id="cm-fp">0</span><span class="cm-lbl">False Positive</span></div>
+                                <div class="cm-cell fn"><span class="cm-val" id="cm-fn">0</span><span class="cm-lbl">False Negative</span></div>
+                                <div class="cm-cell tn"><span class="cm-val" id="cm-tn">0</span><span class="cm-lbl">True Negative</span></div>
+                            </div>
+                        </div>
+
+                        <div class="card sample-eval-card">
+                            <h3>Sample Test Predictions</h3>
+                            <div class="table-responsive">
+                                <table class="eval-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Role</th>
+                                            <th>Job Title</th>
+                                            <th>Ground Truth</th>
+                                            <th>Predicted Score</th>
+                                            <th>Status</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="eval-table-body">
+                                        <!-- Dynamic Rows -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script src="/static/app.js"></script>
+</body>
+</html>
