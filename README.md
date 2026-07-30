@@ -2,25 +2,25 @@
 
 > Production-grade AI Resume Shortlisting & Skill Gap Analyzer powered by **NER Skill Extraction**, **Sentence Transformers (all-MiniLM-L6-v2)** semantic embeddings, **Corpus TF-IDF Skill Gap Ranking**, **ATS Readiness Analyzer**, and a **50-Pair Labeled Evaluation Benchmark**.
 
-[![Live Demo](https://img.shields.io/badge/Live_Demo-onrender.com-success?style=for-the-badge&logo=render)](https://resume-matcher-o9sq.onrender.com)
+[![Live Render App](https://img.shields.io/badge/Live_Render_App-onrender.com-success?style=for-the-badge&logo=render)](https://resume-matcher-o9sq.onrender.com)
 [![GitHub Repository](https://img.shields.io/badge/GitHub-Mittal12--Mansi%2FResume__matcher-181717?style=for-the-badge&logo=github)](https://github.com/Mittal12-Mansi/Resume_matcher)
 ![FastAPI Backend](https://img.shields.io/badge/FastAPI-v2.0-indigo?style=for-the-badge&logo=fastapi)
 ![Evaluation Benchmark](https://img.shields.io/badge/Precision-100%25-brightgreen?style=for-the-badge)
 
-🌐 **Live Web Application Demo**: [https://resume-matcher-o9sq.onrender.com](https://resume-matcher-o9sq.onrender.com)
+🌐 **Live Render Application**: [https://resume-matcher-o9sq.onrender.com](https://resume-matcher-o9sq.onrender.com)
 
 ---
 
-## 🖥️ Application Screenshots
+## 🖥️ Live Render Application Screenshots
 
-### 1. Dashboard & Resume Input Interface
-![Input Interface](assets/ui.png)
+### 1. Render App - Candidate Resume & Job Description Dashboard
+![Render UI Input Interface](assets/ui.png)
 
-### 2. Match Score & TF-IDF Ranked Skill Gap Analysis
-![Results Breakdown & Skill Gap](assets/results.png)
+### 2. Render App - Match Fit, Score Breakdown & TF-IDF Skill Gap Analysis
+![Render UI Results & Skill Gap](assets/results.png)
 
-### 3. Model Precision & Recall Evaluation Benchmark (50 Test Pairs)
-![Model Evaluation Benchmark](assets/ats.png)
+### 3. Render App - 50-Pair Model Evaluation Benchmark
+![Render UI Model Evaluation Benchmark](assets/eval.png)
 
 ---
 
@@ -77,17 +77,12 @@ Open your browser and navigate to **`http://localhost:8000`**.
 python run.py --mode eval
 ```
 
-### 5. Launch Streamlit Application (Alternative UI)
-```bash
-python run.py --mode streamlit
-```
-
 ---
 
-## 🌐 Live Cloud Deployments
+## 🌐 Live Deployment Links
 
-- ⚡ **Primary Application (FastAPI + Glassmorphic UI)**: [https://resume-matcher-o9sq.onrender.com](https://resume-matcher-o9sq.onrender.com)
-- 🎈 **Alternative Streamlit Interface**: [https://resumematcher-jmbunwuludkd6dgadcipkm.streamlit.app](https://resumematcher-jmbunwuludkd6dgadcipkm.streamlit.app)
+- ⚡ **Primary Render App (FastAPI + Glassmorphic UI)**: [https://resume-matcher-o9sq.onrender.com](https://resume-matcher-o9sq.onrender.com)
+- 🎈 **Alternative Streamlit App**: [https://resumematcher-jmbunwuludkd6dgadcipkm.streamlit.app](https://resumematcher-jmbunwuludkd6dgadcipkm.streamlit.app)
 
 ---
 
@@ -125,7 +120,7 @@ Resume_matcher/
 │   ├── index.html           # Ultra-modern web dashboard HTML
 │   ├── styles.css           # Glassmorphism dark mode CSS
 │   └── app.js               # Frontend interactive JavaScript
-├── assets/                  # App interface screenshots & visual diagrams
+├── assets/                  # Render UI screenshots & visual diagrams
 └── data/
     ├── job_postings.json    # Corpus of 500 job postings for TF-IDF training
     ├── skills_taxonomy.json # 500+ skills taxonomy with alias mappings
